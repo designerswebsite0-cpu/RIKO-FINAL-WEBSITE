@@ -112,6 +112,14 @@
     text-wrap: balance;
   }
 
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   .ember-gradient {
     background: radial-gradient(ellipse at 50% 100%, oklch(0.72 0.2 55 / 0.35), transparent 60%);
   }

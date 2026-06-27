@@ -11,6 +11,8 @@ node_modules
 .next
 out
 *.local
+.env
+tsconfig.tsbuildinfo
 
 # Editor directories and files
 .vscode/*
