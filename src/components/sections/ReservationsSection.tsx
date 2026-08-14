@@ -279,13 +279,50 @@ export function ReservationsSection() {
                 {/* Row 2: Email & Guests */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <Field label="Email" name="email" type="email" required placeholder="you@example.com" />
-                  <SelectField label="Guests" name="guests" options={GUEST_OPTIONS} icon={Users} />
+                  <div className="relative">
+                    <label className="block text-[10px] tracking-[0.25em] uppercase text-[#DF9F7E] mb-1.5 font-medium">
+                      Guests
+                    </label>
+                    <div className="relative">
+                      <div className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#DF9F7E]/50">
+                        <Users size={14} strokeWidth={1.5} />
+                      </div>
+                      <input
+                        type="number"
+                        name="guests"
+                        min="1"
+                        max="30"
+                        required
+                        defaultValue="2"
+                        placeholder="Number of guests"
+                        className={`${inputBase} pl-10`}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Row 3: Date & Time */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <Field label="Date" name="date" type="date" required icon={Calendar} />
-                  <SelectField label="Time" name="time" options={TIME_SLOTS} icon={Clock} />
+                  <div className="relative">
+                    <label className="block text-[10px] tracking-[0.25em] uppercase text-[#DF9F7E] mb-1.5 font-medium">
+                      Time
+                    </label>
+                    <div className="relative">
+                      <div className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#DF9F7E]/50">
+                        <Clock size={14} strokeWidth={1.5} />
+                      </div>
+                      <input
+                        type="time"
+                        name="time"
+                        min="18:00"
+                        max="23:30"
+                        required
+                        defaultValue="19:00"
+                        className={`${inputBase} pl-10`}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Row 4: Special requests */}

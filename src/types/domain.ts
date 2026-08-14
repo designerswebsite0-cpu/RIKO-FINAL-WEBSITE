@@ -55,3 +55,16 @@ export interface PaginatedResult<T> {
   perPage: number;
   totalPages: number;
 }
+
+export interface Reel {
+  id: string;
+  title: string;
+  tag: string;
+  videoUrl: string;
+  imageUrl: string;
+  videoPublicId?: string;
+  imagePublicId?: string;
+  sortOrder?: number;
+  createdAt: string;
+  updatedAt: string;
+}

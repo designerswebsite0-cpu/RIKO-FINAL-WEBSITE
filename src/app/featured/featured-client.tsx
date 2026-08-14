@@ -79,7 +79,7 @@ const pressFeatures = [
   },
 ];
 
-const INTERVAL_MS = 3000;
+const INTERVAL_MS = 15000;
 
 export default function FeaturedClient() {
   const [current, setCurrent] = useState(0);
@@ -157,49 +157,67 @@ export default function FeaturedClient() {
         </div>
 
         {/* Center Main Quote Area */}
-        <div className="relative z-10 w-full max-w-4xl mx-auto my-auto py-2">
+        <div className="relative z-10 w-full max-w-4xl mx-auto my-auto py-4">
           <div
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(8px)",
               transition: "opacity 0.3s ease, transform 0.3s ease",
             }}
-            className="space-y-4"
+            className="border-4 border-double border-[#DF9F7E]/40 p-6 sm:p-8 bg-[#180306]/90 backdrop-blur-md rounded-lg shadow-2xl relative"
           >
-            {/* Tagline / Subtitle */}
-            <div className="flex items-center gap-3">
-              <span className="px-2.5 py-0.5 rounded-full border border-[#DF9F7E]/40 bg-[#DF9F7E]/10 text-[9px] uppercase tracking-[0.25em] text-[#DF9F7E] font-mono">
-                {item.tier}
-              </span>
-              <span className="text-white/40 text-[10px] font-mono">{item.date}</span>
+            {/* Top Newspaper Banner */}
+            <div className="text-center border-b border-t border-dashed border-[#DF9F7E]/30 py-1.5 mb-5">
+              <p className="text-[9px] sm:text-[10px] tracking-[0.35em] font-mono text-white/40 uppercase">
+                RIKO GAZETTE &bull; {item.date} &bull; UB CITY SPECIAL
+              </p>
             </div>
 
-            {/* Compact Quote Text */}
-            <blockquote className="max-w-3xl">
-              <p className="font-serif italic text-xl sm:text-3xl lg:text-4xl text-white font-normal leading-[1.25]">
-                &ldquo;{item.quote}&rdquo;
-              </p>
-            </blockquote>
+            {/* Sub-header */}
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-[#DF9F7E]">
+                {item.tier}
+              </span>
+              <span className="text-[9px] sm:text-[10px] text-white/40 font-mono">Vol. II No. VIII</span>
+            </div>
 
-            {/* Publication & Author Info */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/15">
-              <div>
-                <h3 className="font-serif text-lg sm:text-xl text-[#DF9F7E] font-normal tracking-wide">
-                  {item.publication}
-                </h3>
-                <p className="text-[11px] text-white/50 font-light">
-                  {item.headline} — <span className="text-white/80">{item.author}</span>
+            {/* Headline */}
+            <h2 className="font-serif font-medium text-xl sm:text-2xl lg:text-3xl text-white leading-tight mb-4 tracking-tight border-b border-white/10 pb-3">
+              {item.headline}
+            </h2>
+
+            {/* Columns Layout */}
+            <div className="grid md:grid-cols-[1.5fr_1fr] gap-6 items-start">
+              {/* Quote text Column */}
+              <div className="space-y-4">
+                <p className="font-serif italic text-sm sm:text-base text-white/90 leading-relaxed text-justify first-letter:text-4xl first-letter:font-bold first-letter:float-left first-letter:mr-2 first-letter:text-[#DF9F7E] first-letter:font-serif">
+                  {item.quote}
                 </p>
               </div>
 
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#DF9F7E] border border-[#DF9F7E]/40 px-4 py-1.5 rounded-full hover:bg-[#DF9F7E] hover:text-black transition-all duration-300 font-mono"
-              >
-                Read Article <ExternalLink size={10} />
-              </a>
+              {/* Author Info / Link Column */}
+              <div className="border-t md:border-t-0 md:border-l border-[#DF9F7E]/20 pt-4 md:pt-0 md:pl-6 flex flex-col justify-between h-full space-y-4">
+                <div>
+                  <span className="text-[9px] uppercase font-mono tracking-widest text-[#DF9F7E] block mb-1">
+                    WRITTEN BY
+                  </span>
+                  <p className="text-xs sm:text-sm font-sans font-medium text-white/80">
+                    {item.author}
+                  </p>
+                  <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block mt-0.5">
+                    {item.publication} Correspondent
+                  </span>
+                </div>
+
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-black bg-[#DF9F7E] px-4 py-2 rounded hover:bg-white hover:text-black transition-all duration-300 font-semibold font-mono"
+                >
+                  Read Article <ExternalLink size={10} />
+                </a>
+              </div>
             </div>
           </div>
         </div>

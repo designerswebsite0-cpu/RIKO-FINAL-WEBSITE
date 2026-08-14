@@ -2,7 +2,7 @@ import { Timestamp } from "firebase-admin/firestore";
 import { deleteMenuImage } from "@/lib/storage";
 import { getFirebaseDb } from "@/lib/firebase";
 import {
-  MenuItem, MenuStatus, PaginatedResult, Reservation, ReservationLog, ReservationStatus,
+  MenuItem, MenuStatus, PaginatedResult, Reservation, ReservationLog, ReservationStatus, Reel,
 } from "@/types/domain";
 
 type MenuInput = Omit<MenuItem, "id" | "slug" | "createdAt" | "updatedAt">;
@@ -253,8 +253,98 @@ export async function recentReservationLogs() {
   return snapshot.docs.map((doc) => logFromDocument(doc.id, doc.data())).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 10);
 }
 
+const reelsCollection = "reels";
+
+function reelFromDocument(id: string, raw: Record<string, unknown>): Reel {
+  return {
+    id: asString(raw.id, id),
+    title: asString(raw.title),
+    tag: asString(raw.tag),
+    videoUrl: asString(raw.video_url ?? raw.videoUrl),
+    imageUrl: asString(raw.image_url ?? raw.imageUrl),
+    videoPublicId: asString(raw.video_public_id ?? raw.videoPublicId) || undefined,
+    imagePublicId: asString(raw.image_public_id ?? raw.imagePublicId) || undefined,
+    sortOrder: asNumber(raw.sort_order ?? raw.sortOrder),
+    createdAt: asIso(raw.created_at ?? raw.createdAt),
+    updatedAt: asIso(raw.updated_at ?? raw.updatedAt ?? raw.created_at ?? raw.createdAt),
+  };
+}
+
+export async function listReels() {
+  const snapshot = await getFirebaseDb().collection(reelsCollection).get();
+  return snapshot.docs
+    .map((doc) => reelFromDocument(doc.id, doc.data()))
+    .sort((a, b) => (a.sortOrder || Number(a.id) || 0) - (b.sortOrder || Number(b.id) || 0));
+}
+
+export async function getReel(id: string) {
+  const snapshot = await getFirebaseDb().collection(reelsCollection).doc(id).get();
+  return snapshot.exists ? reelFromDocument(snapshot.id, snapshot.data() ?? {}) : null;
+}
+
+export async function createReel(input: {
+  title: string;
+  tag: string;
+  videoUrl: string;
+  imageUrl: string;
+  videoPublicId?: string;
+  imagePublicId?: string;
+  sortOrder?: number;
+}) {
+  const db = getFirebaseDb();
+  const id = await nextId(reelsCollection);
+  const stamp = now();
+  const row = {
+    id: Number(id),
+    title: input.title,
+    tag: input.tag,
+    video_url: input.videoUrl,
+    image_url: input.imageUrl,
+    video_public_id: input.videoPublicId ?? null,
+    image_public_id: input.imagePublicId ?? null,
+    sort_order: input.sortOrder ?? Number(id),
+    created_at: stamp,
+    updated_at: stamp,
+  };
+  await db.collection(reelsCollection).doc(id).set(row);
+  return reelFromDocument(id, row);
+}
+
+export async function updateReel(id: string, input: Partial<Omit<Reel, "id" | "createdAt" | "updatedAt">>) {
+  const current = await getReel(id);
+  if (!current) return null;
+  const updates: Record<string, unknown> = { updated_at: now() };
+  if (input.title !== undefined) updates.title = input.title;
+  if (input.tag !== undefined) updates.tag = input.tag;
+  if (input.videoUrl !== undefined) updates.video_url = input.videoUrl;
+  if (input.imageUrl !== undefined) updates.image_url = input.imageUrl;
+  if (input.videoPublicId !== undefined) updates.video_public_id = input.videoPublicId || null;
+  if (input.imagePublicId !== undefined) updates.image_public_id = input.imagePublicId || null;
+  if (input.sortOrder !== undefined) updates.sort_order = input.sortOrder;
+
+  await getFirebaseDb().collection(reelsCollection).doc(id).update(updates);
+
+  if (input.imagePublicId && input.imagePublicId !== current.imagePublicId) {
+    await deleteMenuImage(current.imagePublicId);
+  }
+  if (input.videoPublicId && input.videoPublicId !== current.videoPublicId) {
+    await deleteMenuImage(current.videoPublicId);
+  }
+
+  return getReel(id);
+}
+
+export async function deleteReel(id: string) {
+  const current = await getReel(id);
+  if (!current) return false;
+  await getFirebaseDb().collection(reelsCollection).doc(id).delete();
+  if (current.imagePublicId) await deleteMenuImage(current.imagePublicId);
+  if (current.videoPublicId) await deleteMenuImage(current.videoPublicId);
+  return true;
+}
+
 export async function databaseHealth() {
   const db = getFirebaseDb();
   await db.collection(menuCollection).limit(1).get();
-  return { database: "firebase-firestore", collections: [menuCollection, reservationCollection, logCollection] };
+  return { database: "firebase-firestore", collections: [menuCollection, reservationCollection, logCollection, reelsCollection] };
 }

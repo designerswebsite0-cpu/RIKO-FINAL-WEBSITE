@@ -30,6 +30,16 @@ export const reservationPatchSchema = z.object({
   status: z.enum(RESERVATION_STATUSES).optional(),
   isRead: z.boolean().optional(),
 });
+export const reelSchema = z.object({
+  title: z.string().trim().min(1, "Title is required.").max(150),
+  tag: z.string().trim().min(1, "Tag is required.").max(50),
+  videoUrl: z.string().trim().min(1, "Video URL is required."),
+  imageUrl: z.string().trim().min(1, "Image thumbnail URL is required."),
+  videoPublicId: z.string().trim().optional(),
+  imagePublicId: z.string().trim().optional(),
+  sortOrder: z.coerce.number().optional(),
+});
+export const reelPatchSchema = reelSchema.partial();
 export function zodFields(error: z.ZodError) {
   return Object.fromEntries(error.issues.map((issue) => [issue.path.join(".") || "form", issue.message]));
 }

@@ -97,3 +97,44 @@ export function storageConfigurationPresent() {
     cleanEnv("CLOUDINARY_API_SECRET")
   );
 }
+
+export async function uploadMenuVideo(file: File) {
+  if (!file.type.startsWith("video/")) throw new Error("Only video uploads are supported.");
+  if (file.size > 100 * 1024 * 1024) throw new Error("Video size must be 100 MB or less.");
+  
+  if (!storageConfigurationPresent()) {
+    const uploadDir = path.join(process.cwd(), "public", "uploads");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const ext = path.extname(file.name) || ".mp4";
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}${ext}`;
+    const filePath = path.join(uploadDir, fileName);
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    fs.writeFileSync(filePath, buffer);
+
+    const url = `/uploads/${fileName}`;
+    return { url, publicId: fileName };
+  }
+
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  return new Promise<{ url: string; publicId: string }>((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: cleanEnv("CLOUDINARY_FOLDER") || "riko/menu",
+        resource_type: "video",
+      },
+      (error, result) => {
+        if (error || !result) {
+          return reject(new Error(error?.message || "Cloudinary video upload failed."));
+        }
+        resolve({ url: result.secure_url, publicId: result.public_id });
+      }
+    );
+    uploadStream.end(buffer);
+  });
+}

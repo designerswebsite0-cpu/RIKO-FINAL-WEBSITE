@@ -112,4 +112,36 @@ export class ApiClient {
       method: "DELETE",
     });
   }
+
+  // --------------------------------------------------------
+  // REELS ROUTES
+  // --------------------------------------------------------
+
+  static async getReels(): Promise<{ success: boolean; items: any[] }> {
+    return this.request<{ success: boolean; items: any[] }>("/api/v1/reels", { cache: "no-store" });
+  }
+
+  static async getAdminReels(): Promise<any> {
+    return this.request<any>("/api/admin/reels", { cache: "no-store" });
+  }
+
+  static async createReel(data: any): Promise<any> {
+    return this.request<any>("/api/admin/reels", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  static async updateReel(id: string, data: any): Promise<any> {
+    return this.request<any>(`/api/admin/reels/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
+  }
+
+  static async deleteReel(id: string): Promise<any> {
+    return this.request<any>(`/api/admin/reels/${id}`, {
+      method: "DELETE",
+    });
+  }
 }

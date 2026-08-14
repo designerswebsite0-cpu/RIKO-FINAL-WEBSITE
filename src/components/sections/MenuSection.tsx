@@ -112,7 +112,7 @@ export function MenuSection() {
   return (
     <section
       id="menu"
-      className="relative min-h-screen lg:h-screen lg:max-h-screen bg-gradient-to-b from-[#160205] via-[#2A060C] to-[#120204] overflow-y-auto lg:overflow-hidden flex flex-col justify-between pt-18 lg:pt-20 pb-2 lg:pb-3"
+      className="relative min-h-screen lg:h-screen lg:max-h-screen bg-gradient-to-b from-[#160205] via-[#2A060C] to-[#120204] overflow-y-auto lg:overflow-hidden flex flex-col justify-between pt-24 lg:pt-32 pb-4 lg:pb-6"
     >
       {/* RIKO Maroon ambient glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#7A1523]/35 via-[#230408]/60 to-[#0A0002] pointer-events-none" />
@@ -120,7 +120,7 @@ export function MenuSection() {
       <div className="relative z-10 w-full max-w-[1440px] mx-auto px-4 sm:px-8 flex-1 flex flex-col justify-between my-auto">
         
         {/* Category Sections Bar — Horizontally scrollable on mobile */}
-        <div className="no-scrollbar mx-auto flex w-full max-w-4xl overflow-x-auto flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-1.5 py-0.5 px-2">
+        <div className="no-scrollbar mx-auto flex w-full max-w-4xl overflow-x-auto flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-2 py-2 px-2 mt-4 lg:mt-6 mb-4">
           {categories.map((category) => (
             <button
               key={category}
@@ -137,7 +137,7 @@ export function MenuSection() {
         </div>
 
         {/* Swipe / Scroll Hint Banner */}
-        <div className="flex items-center justify-between px-3 py-1 max-w-5xl mx-auto w-full">
+        <div className="flex items-center justify-between px-3 py-2 max-w-5xl mx-auto w-full mb-4">
           <div className="flex items-center gap-2 text-[9px] uppercase tracking-[0.25em] text-[#DF9F7E]">
             <span className="animate-pulse font-bold">⟵</span>
             <span>Swipe to explore dishes</span>
