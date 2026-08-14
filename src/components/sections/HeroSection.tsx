@@ -9,60 +9,63 @@ export function HeroSection() {
   const [showOrderModal, setShowOrderModal] = useState(false);
 
   return (
-    <section id="home" className="relative min-h-screen w-full overflow-hidden grain">
+    <section id="home" className="relative h-screen w-full overflow-hidden grain">
       <div className="absolute inset-0">
         <Image
           src={hero}
-          alt="RIKO immersive Peruvian-Latin restaurant interior with fire and terracotta walls"
-          width={1920}
-          height={1280}
-          className="w-full h-full object-cover animate-slow-zoom"
+          alt="RIKO Red Vault Lounge & Dining Room"
+          fill
+          priority
+          sizes="100vw"
+          className="w-full h-full object-cover animate-slow-zoom brightness-105 contrast-105"
         />
-        {/* cinematic overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/30 to-background" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/70" />
-        <div className="absolute inset-0 ember-gradient animate-ember" />
+        {/* Subtle vignette gradients so the image remains crystal clear */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/15 to-black/80" />
       </div>
 
-      <div className="relative z-10 min-h-screen flex flex-col">
-        <div className="flex-1 flex flex-col justify-center max-w-[1500px] w-full mx-auto px-6 lg:px-12 pt-32">
-          <div className="max-w-4xl">
-            <p className="reveal text-[11px] tracking-[0.5em] uppercase text-accent/90 mb-8 flex items-center gap-4">
-              <span className="w-10 h-px bg-accent/60" />
-              Bengaluru — UB City
-            </p>
+      <div className="relative z-10 h-full flex flex-col justify-between py-6 px-6 lg:px-12 max-w-[1500px] mx-auto w-full">
+        {/* Top Spacer for Nav */}
+        <div className="pt-16" />
 
-            <h1 className="reveal font-display text-[14vw] sm:text-[10vw] lg:text-[8.5vw] leading-[0.95] text-sand mb-4">
-              <span className="italic font-serif font-light">Fire.</span>{" "}
-              <span className="italic font-serif font-light">Heritage.</span>
-              <br />
-              <span className="italic font-serif font-light text-accent">Memory.</span>
-            </h1>
-
-            <p className="reveal max-w-xl text-base lg:text-lg text-sand/75 leading-relaxed font-light mt-10">
-              An immersive Peruvian-Latin experience crafted through fire, story and the quiet
-              language of the highlands — Bengaluru&apos;s first true voyage into the soul of South
-              America.
-            </p>
-
-            <div className="reveal flex flex-wrap items-center gap-5 mt-12">
-              <Link
-                href="/menu"
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.35em] hover:bg-accent transition-all duration-700"
-              >
-                View Menu
-                <span className="w-6 h-px bg-current transition-all duration-500 group-hover:w-10" />
-              </Link>
-
-              <button
-                onClick={() => setShowOrderModal(true)}
-                className="group inline-flex items-center gap-3 px-8 py-4 border border-sand/30 text-sand text-[11px] uppercase tracking-[0.35em] hover:border-accent hover:text-accent transition-all duration-700 cursor-pointer"
-              >
-                Order Online
-                <span className="w-6 h-px bg-current transition-all duration-500 group-hover:w-10" />
-              </button>
-            </div>
+        {/* Centered Editorial Title (Pasta e Passione style) */}
+        <div className="text-center max-w-5xl mx-auto my-auto py-2 flex flex-col justify-center items-center">
+          <div className="reveal inline-flex items-center gap-3 px-5 py-1.5 rounded-full border border-white/30 bg-black/30 backdrop-blur-md text-[10px] sm:text-[11px] uppercase tracking-[0.4em] text-[#DF9F7E] mb-6 font-medium">
+            ★ Bengaluru — UB City
           </div>
+
+          <h1 className="reveal font-serif text-4xl sm:text-6xl lg:text-8xl text-white tracking-[0.15em] uppercase leading-tight drop-shadow-[0_4px_25px_rgba(0,0,0,0.8)]">
+            SABOR <span className="font-calligraphy text-5xl sm:text-7xl lg:text-[7.5rem] text-[#DF9F7E] font-normal lowercase px-2 align-middle drop-shadow-md">de</span> RIKO
+          </h1>
+
+          <div className="reveal flex flex-wrap items-center justify-center gap-3 sm:gap-4 mt-8">
+            <Link
+              href="/menu"
+              className="px-6 py-3 bg-white text-[#3E0E16] text-[10px] uppercase tracking-[0.3em] hover:bg-[#DF9F7E] hover:text-white transition-all duration-500 font-semibold rounded-full shadow-2xl"
+            >
+              Explore Menu
+            </Link>
+
+            <Link
+              href="/reservation"
+              className="px-6 py-3 border border-white/60 bg-black/30 backdrop-blur-md text-white text-[10px] uppercase tracking-[0.3em] hover:bg-white hover:text-[#3E0E16] transition-all duration-500 font-medium rounded-full shadow-lg"
+            >
+              Reserve Table
+            </Link>
+
+            <button
+              onClick={() => setShowOrderModal(true)}
+              className="px-6 py-3 border border-[#DF9F7E]/60 bg-black/30 backdrop-blur-md text-[#DF9F7E] text-[10px] uppercase tracking-[0.3em] hover:bg-[#DF9F7E] hover:text-white transition-all duration-500 cursor-pointer rounded-full font-medium"
+            >
+              Order Online
+            </button>
+          </div>
+        </div>
+
+        {/* Bottom indicator */}
+        <div className="text-center pb-2">
+          <span className="text-[9px] uppercase tracking-[0.4em] text-white/50">
+            Scroll to explore
+          </span>
         </div>
       </div>
 
@@ -75,11 +78,11 @@ export function HeroSection() {
           />
 
           {/* Modal Content */}
-          <div className="relative bg-background border border-border/80 text-sand p-8 rounded-lg max-w-md w-full z-10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-accent/20 animate-in fade-in-0 zoom-in-95 duration-200">
+          <div className="relative bg-[#1A0508] border border-[#DF9F7E]/30 text-white p-8 rounded-lg max-w-md w-full z-10 shadow-[0_20px_50px_rgba(0,0,0,0.85)] animate-in fade-in-0 zoom-in-95 duration-200">
             {/* Close Button */}
             <button
               onClick={() => setShowOrderModal(false)}
-              className="absolute right-4 top-4 rounded-sm opacity-70 cursor-pointer transition-opacity hover:opacity-100 focus:outline-none text-sand p-1"
+              className="absolute right-4 top-4 rounded-sm opacity-70 cursor-pointer transition-opacity hover:opacity-100 focus:outline-none text-white p-1"
               aria-label="Close"
             >
               <svg
@@ -94,8 +97,8 @@ export function HeroSection() {
             </button>
 
             <div className="text-center mb-6">
-              <h2 className="font-display text-2xl text-sand tracking-wide">Order RIKO Online</h2>
-              <p className="text-accent/80 text-[10px] tracking-wider uppercase mt-2 font-semibold">
+              <h2 className="font-serif text-2xl text-white tracking-wide">Order RIKO Online</h2>
+              <p className="text-[#DF9F7E] text-[10px] tracking-wider uppercase mt-2 font-semibold">
                 Select your preferred delivery platform
               </p>
             </div>
@@ -105,17 +108,17 @@ export function HeroSection() {
                 href="https://swiggy.onelink.me/BVRZ?af_dp=swiggydiners%3A%2F%2Fdetails%2F1259452%3Fsource%3Dsharing"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-5 border border-border/60 hover:border-accent hover:bg-card/30 transition-all duration-500 group rounded"
+                className="flex items-center justify-between p-5 border border-white/10 hover:border-[#DF9F7E]/50 hover:bg-[#3E0E16]/30 transition-all duration-500 group rounded"
               >
                 <div>
-                  <div className="font-display text-lg text-sand group-hover:text-accent transition-colors">
+                  <div className="font-serif text-lg text-white group-hover:text-[#DF9F7E] transition-colors">
                     Swiggy
                   </div>
-                  <div className="text-[10px] text-muted-foreground tracking-widest uppercase mt-1">
+                  <div className="text-[10px] text-[#DF9F7E]/70 tracking-widest uppercase mt-1">
                     Delivery & Diners
                   </div>
                 </div>
-                <span className="text-accent text-[10px] tracking-widest uppercase flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                <span className="text-[#DF9F7E] text-[10px] tracking-widest uppercase flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                   Order Now →
                 </span>
               </a>
@@ -124,17 +127,17 @@ export function HeroSection() {
                 href="https://zomato.onelink.me/xqzv/hp4macoq"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-5 border border-border/60 hover:border-accent hover:bg-card/30 transition-all duration-500 group rounded"
+                className="flex items-center justify-between p-5 border border-white/10 hover:border-[#DF9F7E]/50 hover:bg-[#3E0E16]/30 transition-all duration-500 group rounded"
               >
                 <div>
-                  <div className="font-display text-lg text-sand group-hover:text-accent transition-colors">
+                  <div className="font-serif text-lg text-white group-hover:text-[#DF9F7E] transition-colors">
                     Zomato
                   </div>
-                  <div className="text-[10px] text-muted-foreground tracking-widest uppercase mt-1">
+                  <div className="text-[10px] text-[#DF9F7E]/70 tracking-widest uppercase mt-1">
                     Delivery & Dining
                   </div>
                 </div>
-                <span className="text-accent text-[10px] tracking-widest uppercase flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                <span className="text-[#DF9F7E] text-[10px] tracking-widest uppercase flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                   Order Now →
                 </span>
               </a>

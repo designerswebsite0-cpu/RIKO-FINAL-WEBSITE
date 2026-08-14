@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ApiClient } from "@/lib/api-client";
 
 export function LoginForm() {
   const [password, setPassword] = useState("");
@@ -15,14 +16,9 @@ export function LoginForm() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      });
-      const data = await res.json();
+      const data = await ApiClient.adminLogin(password);
 
-      if (!res.ok || !data.success) {
+      if (!data.success) {
         setError(data.error || "Authentication failed.");
         return;
       }

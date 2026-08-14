@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { MenuItem } from "@/types/domain";
 import { menuSeedItems } from "@/data/menu-items";
+import { ApiClient } from "@/lib/api-client";
 
 const categoryOrder: MenuItem["category"][] = [
   "For One",
@@ -35,8 +36,7 @@ export function MenuSection() {
 
     async function loadMenu() {
       try {
-        const res = await fetch("/api/v1/menu", { cache: "no-store" });
-        const data = await res.json();
+        const data = await ApiClient.getMenu();
         if (alive && data.success && Array.isArray(data.items) && data.items.length > 0) {
           setItems(sortMenu(data.items));
           setActiveCategory((data.items[0].category || categoryOrder[0]) as MenuItem["category"]);
@@ -112,111 +112,185 @@ export function MenuSection() {
   return (
     <section
       id="menu"
-      className="relative overflow-hidden border-t border-accent/15 bg-[#0B0B0B] px-6 py-24 text-white md:px-12 lg:py-32"
+      className="relative min-h-screen lg:h-screen lg:max-h-screen bg-gradient-to-b from-[#160205] via-[#2A060C] to-[#120204] overflow-y-auto lg:overflow-hidden flex flex-col justify-between pt-18 lg:pt-20 pb-2 lg:pb-3"
     >
-      <div className="absolute left-[-10%] top-[20%] h-[60%] w-1/2 rounded-full bg-[#350E10]/20 blur-3xl" />
-      <div className="absolute bottom-[10%] right-[-10%] h-[60%] w-1/2 rounded-full bg-[#350E10]/15 blur-3xl" />
+      {/* RIKO Maroon ambient glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#7A1523]/35 via-[#230408]/60 to-[#0A0002] pointer-events-none" />
 
-      <div className="relative z-10 mx-auto max-w-[1300px] text-center">
-        <p className="reveal mb-6 text-[11px] uppercase tracking-[0.45em] text-accent">
-          Interactive Menu
-        </p>
-        <h2 className="reveal font-display text-5xl font-light leading-tight text-white md:text-7xl">
-          Bespoke
-          <br />
-          <span className="font-serif italic text-sand">Curations</span>
-        </h2>
-        <p className="reveal mx-auto mt-7 max-w-xl text-sm font-light leading-8 text-white/50">
-          Browse our contemporary creations. Switch categories below and swipe to center
-          the signature visual cards.
-        </p>
-      </div>
+      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-4 sm:px-8 flex-1 flex flex-col justify-between my-auto">
+        
+        {/* Category Sections Bar — Horizontally scrollable on mobile */}
+        <div className="no-scrollbar mx-auto flex w-full max-w-4xl overflow-x-auto flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-1.5 py-0.5 px-2">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setActiveCategory(category)}
+              className={`shrink-0 px-3.5 sm:px-4 py-1.5 rounded-full text-[10px] uppercase tracking-[0.2em] transition-all duration-300 font-medium cursor-pointer ${
+                activeCategory === category
+                  ? "bg-[#DF9F7E] text-[#220408] shadow-md font-bold scale-105"
+                  : "bg-[#3E0E16]/60 text-white/80 hover:bg-[#6B0F1A]/60 hover:text-white border border-[#9E2336]/40"
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
 
-      <div className="relative z-10 mx-auto mt-12 flex max-w-5xl flex-wrap justify-center gap-2 border border-white/[0.03] bg-[#141414]/60 p-3 shadow-2xl backdrop-blur-xl">
-        {categories.map((category) => (
-          <button
-            key={category}
-            onClick={() => setActiveCategory(category)}
-            className={`px-5 py-4 text-[11px] uppercase tracking-[0.28em] transition-all duration-500 ${
-              activeCategory === category
-                ? "border-b border-accent bg-accent/5 text-accent"
-                : "text-white/45 hover:text-white"
-            }`}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-
-      <div className="relative z-10 mx-auto mt-10 max-w-[1300px]">
-        {loading ? (
-          <div className="py-24 text-center text-[11px] uppercase tracking-[0.45em] text-white/35">
-            Loading the menu...
+        {/* Swipe / Scroll Hint Banner */}
+        <div className="flex items-center justify-between px-3 py-1 max-w-5xl mx-auto w-full">
+          <div className="flex items-center gap-2 text-[9px] uppercase tracking-[0.25em] text-[#DF9F7E]">
+            <span className="animate-pulse font-bold">⟵</span>
+            <span>Swipe to explore dishes</span>
+            <span className="animate-pulse font-bold">⟶</span>
           </div>
-        ) : (
-          <>
+
+          {/* Pagination Dots */}
+          <div className="flex items-center gap-1.5">
+            {activeItems.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  setActiveCard(idx);
+                  scrollToCard(idx);
+                }}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  activeCard === idx
+                    ? "w-4 bg-[#DF9F7E]"
+                    : "w-1.5 bg-white/25 hover:bg-white/50"
+                }`}
+                aria-label={`Go to item ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Carousel Container */}
+        <div className="relative mx-auto my-auto w-full max-w-[1380px]">
+
+          {/* Desktop Floating Left Arrow */}
+          <button
+            type="button"
+            onClick={() => moveCard(-1)}
+            disabled={activeCard === 0}
+            className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-[#180306]/90 border border-[#DF9F7E]/50 text-[#DF9F7E] backdrop-blur-md items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 hover:bg-[#DF9F7E] hover:text-black disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer"
+            aria-label="Previous Dish"
+          >
+            ‹
+          </button>
+
+          {/* Desktop Floating Right Arrow */}
+          <button
+            type="button"
+            onClick={() => moveCard(1)}
+            disabled={activeCard >= activeItems.length - 1}
+            className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-[#180306]/90 border border-[#DF9F7E]/50 text-[#DF9F7E] backdrop-blur-md items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 hover:bg-[#DF9F7E] hover:text-black disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer"
+            aria-label="Next Dish"
+          >
+            ›
+          </button>
+
+          {loading ? (
+            <div className="py-16 text-center text-xs uppercase tracking-[0.4em] text-white/50">
+              Loading RIKO Menu...
+            </div>
+          ) : (
             <div
               ref={carouselRef}
               onScroll={() => requestAnimationFrame(updateActiveCard)}
-              className="no-scrollbar flex cursor-grab snap-x snap-mandatory gap-0 overflow-x-auto scroll-smooth py-12 pb-10 active:cursor-grabbing"
+              className="no-scrollbar flex cursor-grab snap-x snap-mandatory gap-4 sm:gap-5 overflow-x-auto scroll-smooth py-1 px-4 sm:px-8 lg:px-12 active:cursor-grabbing"
             >
-              <div className="shrink-0 basis-[calc(50vw-220px)]" />
               {activeItems.map((item, index) => (
                 <article
                   key={item.id || item.slug || item.name}
                   data-menu-card
-                  className={`relative flex max-w-[420px] shrink-0 basis-[82vw] snap-center items-center justify-center overflow-hidden rounded-xl border bg-[#0B0B0B] shadow-2xl transition-all duration-700 sm:basis-[420px] ${
+                  onClick={() => {
+                    setActiveCard(index);
+                    scrollToCard(index);
+                  }}
+                  className={`relative flex shrink-0 snap-center flex-col overflow-hidden rounded-2xl border p-3 transition-all duration-300 cursor-pointer w-full lg:w-[calc((100%-2.5rem)/3)] ${
                     activeCard === index
-                      ? "-translate-y-4 scale-100 border-accent/45 opacity-100 blur-0 grayscale-0"
-                      : "scale-[0.85] border-white/5 opacity-70 blur-[1px]"
+                      ? "bg-gradient-to-b from-[#3E0E16]/95 via-[#25060B]/95 to-[#160205]/95 border-[#DF9F7E] shadow-[0_10px_30px_rgba(223,159,126,0.25)] scale-[1.01]"
+                      : "bg-[#1E0408]/80 border-[#9E2336]/35 hover:border-[#DF9F7E]/50 hover:bg-[#2A060C]/90 opacity-90"
                   }`}
                 >
-                  <img
-                    src={item.imageUrl || "/menu-assets/bomba_de_choclo.png"}
-                    alt={item.name}
-                    className="block h-auto w-full object-contain [clip-path:inset(0_0_38%_0)]"
-                  />
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col gap-1 rounded-b-xl bg-gradient-to-t from-[#0B0B0B] from-50% via-[#0B0B0B]/80 to-transparent px-5 pb-5 pt-16 text-left">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <h3 className="truncate font-serif text-2xl font-normal tracking-wide text-white">
+                  {/* Dish Image Display Box — Explicit 4:5 Aspect Ratio, capped only on desktop */}
+                  <div className="relative aspect-[4/5] lg:max-h-[45vh] w-full bg-black/60 overflow-hidden rounded-xl shadow-md border border-white/10 mx-auto">
+                    <img
+                      src={item.imageUrl || "/menu-assets/bomba_de_choclo.png"}
+                      alt={item.name}
+                      className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                    
+                    {/* Floating Price Pill */}
+                    <span className="absolute top-2.5 right-2.5 bg-[#160205]/90 backdrop-blur-md text-[#DF9F7E] font-bold text-xs px-2.5 py-1 rounded-full border border-[#DF9F7E]/40 shadow-lg">
+                      ₹{item.price}
+                    </span>
+                  </div>
+
+                  {/* Clean Content Area below Image */}
+                  <div className="flex flex-col justify-between pt-2.5 px-1 flex-1">
+                    <div>
+                      {/* Category Tag */}
+                      <span className="text-[9px] uppercase tracking-[0.3em] text-[#DF9F7E] font-semibold block mb-0.5">
+                        {item.category}
+                      </span>
+                      
+                      {/* Title */}
+                      <h3 className="font-serif text-base sm:text-lg text-white font-medium leading-snug mb-1 line-clamp-1">
                         {item.name}
                       </h3>
-                      <span className="shrink-0 text-lg font-medium text-accent">
-                        ₹{item.price}
+
+                      {/* Description */}
+                      <p className="line-clamp-2 text-[11px] sm:text-xs text-white/75 font-light leading-relaxed mb-2">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    {/* Footer Status Bar */}
+                    <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+                      <span className="text-[9px] uppercase tracking-widest text-white/40 font-mono">
+                        Fire Kitchen
+                      </span>
+                      <span className={`text-[9px] uppercase tracking-widest font-semibold transition-colors ${
+                        activeCard === index ? "text-[#DF9F7E]" : "text-white/40"
+                      }`}>
+                        {activeCard === index ? "★ Selected" : "Tap to select"}
                       </span>
                     </div>
-                    <p className="line-clamp-2 text-xs font-light leading-5 text-white/45">
-                      {item.description}
-                    </p>
                   </div>
                 </article>
               ))}
-              <div className="shrink-0 basis-[calc(50vw-220px)]" />
             </div>
+          )}
+        </div>
 
-            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <button
-                type="button"
-                onClick={() => moveCard(-1)}
-                disabled={activeCard === 0}
-                className="min-w-36 border border-accent/35 px-5 py-3 text-[10px] uppercase tracking-[0.35em] text-sand/70 transition-all hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-30"
-              >
-                Previous
-              </button>
-              <span className="text-[10px] uppercase tracking-[0.35em] text-sand/35">
-                Swipe on mobile · {activeCard + 1} / {activeItems.length}
-              </span>
-              <button
-                type="button"
-                onClick={() => moveCard(1)}
-                disabled={activeCard >= activeItems.length - 1}
-                className="min-w-36 border border-accent/35 px-5 py-3 text-[10px] uppercase tracking-[0.35em] text-sand/70 transition-all hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-30"
-              >
-                Next
-              </button>
-            </div>
-          </>
-        )}
+        {/* Bottom Controls Bar */}
+        <div className="flex items-center justify-between gap-4 pt-2 max-w-5xl mx-auto w-full border-t border-white/10">
+          <div className="text-[10px] uppercase tracking-[0.3em] text-white/60 font-medium">
+            Dish <span className="text-[#DF9F7E] font-bold">{activeCard + 1}</span> of <span className="text-white font-bold">{activeItems.length}</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => moveCard(-1)}
+              disabled={activeCard === 0}
+              className="px-3.5 py-1.5 border border-white/20 rounded-full text-[9px] uppercase tracking-[0.25em] text-white hover:border-[#DF9F7E] hover:text-[#DF9F7E] transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+            >
+              ← Prev
+            </button>
+            <button
+              type="button"
+              onClick={() => moveCard(1)}
+              disabled={activeCard >= activeItems.length - 1}
+              className="px-3.5 py-1.5 border border-white/20 rounded-full text-[9px] uppercase tracking-[0.25em] text-white hover:border-[#DF9F7E] hover:text-[#DF9F7E] transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+
       </div>
     </section>
   );

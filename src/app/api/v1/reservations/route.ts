@@ -3,6 +3,7 @@ import { getClientIp, publicCorsHeaders, publicJson } from "@/lib/http";
 import { createReservation } from "@/lib/repository";
 import { recordReservation, reservationRateLimited } from "@/lib/rate-limit";
 import { reservationCreateSchema, zodFields } from "@/lib/validation";
+import { sendReservationEmails } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -14,6 +15,18 @@ export async function POST(request: NextRequest) {
   try {
     const item = await createReservation(parsed.data);
     recordReservation(ip);
+
+    // Fire-and-forget — email errors never block the reservation response
+    sendReservationEmails({
+      name: item.name,
+      email: item.email,
+      phone: item.phone,
+      date: item.date,
+      time: item.time,
+      guests: item.guests,
+      specialRequest: item.specialRequest,
+    }).catch((err) => console.error("[email] Failed to send reservation emails:", err));
+
     return publicJson(request, { success: true, item }, 201);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to save reservation.";

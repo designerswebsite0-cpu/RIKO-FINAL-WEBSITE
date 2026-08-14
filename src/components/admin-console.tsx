@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { MenuItem, MenuStatus, Reservation, ReservationStatus } from "@/types/domain";
 import logo from "@/assets/riko-logo.png";
+import { ApiClient } from "@/lib/api-client";
 
 type View = "reservations" | "menu";
 type DashboardItem = Reservation | MenuItem;
@@ -57,17 +58,14 @@ export function AdminConsole() {
     setError("");
 
     try {
-      const endpoint =
-        currentView === "menu" ? "/api/admin/menu?perPage=100" : "/api/admin/reservations";
-      const res = await fetch(endpoint, { cache: "no-store" });
+      const json = currentView === "menu" ? await ApiClient.getAdminMenu() : await ApiClient.getAdminReservations();
 
-      if (res.status === 401) {
+      if ((json as any).status === 401) {
         router.push("/admin");
         return;
       }
 
-      const json = await res.json();
-      if (!res.ok || !json.success) throw new Error(json.error || "Unable to load dashboard data.");
+      if (!json.success) throw new Error((json as any).error || "Unable to load dashboard data.");
       setData(Array.isArray(json.items) ? json.items : []);
     } catch (err) {
       setData([]);
@@ -140,7 +138,7 @@ export function AdminConsole() {
   }, [menuItems]);
 
   async function handleLogout() {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await ApiClient.adminLogout();
     router.push("/admin");
   }
 
@@ -149,13 +147,8 @@ export function AdminConsole() {
     setError("");
 
     try {
-      const res = await fetch(`/api/admin/reservations/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status, isRead: true }),
-      });
-      const json = await res.json();
-      if (!res.ok || !json.success) throw new Error(json.error || "Unable to update reservation.");
+      const json = await ApiClient.updateReservationStatus(id, status);
+      if (!json.success) throw new Error(json.error || "Unable to update reservation.");
       setData((items) => items.map((item) => item.id === id ? json.item : item));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to update reservation.");
@@ -169,22 +162,17 @@ export function AdminConsole() {
     setError("");
 
     try {
-      const res = await fetch(`/api/admin/menu/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: input.name,
-          description: input.description,
-          price: input.price,
-          category: input.category,
-          imageUrl: input.imageUrl,
-          imagePublicId: input.imagePublicId,
-          status: input.status,
-          available: input.available,
-        }),
+      const json = await ApiClient.updateMenuItem(id, {
+        name: input.name,
+        description: input.description,
+        price: input.price,
+        category: input.category,
+        imageUrl: input.imageUrl,
+        imagePublicId: input.imagePublicId,
+        status: input.status,
+        available: input.available,
       });
-      const json = await res.json();
-      if (!res.ok || !json.success) throw new Error(json.error || "Unable to update menu item.");
+      if (!json.success) throw new Error(json.error || "Unable to update menu item.");
       setData((items) => items.map((item) => item.id === id ? json.item : item));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to update menu item.");
@@ -198,22 +186,17 @@ export function AdminConsole() {
     setError("");
 
     try {
-      const res = await fetch("/api/admin/menu", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: input.name,
-          description: input.description,
-          price: input.price,
-          category: input.category,
-          imageUrl: input.imageUrl,
-          imagePublicId: input.imagePublicId,
-          status: input.status ?? "Published",
-          available: input.available ?? true,
-        }),
+      const json = await ApiClient.createMenuItem({
+        name: input.name,
+        description: input.description,
+        price: input.price,
+        category: input.category,
+        imageUrl: input.imageUrl,
+        imagePublicId: input.imagePublicId,
+        status: input.status ?? "Published",
+        available: input.available ?? true,
       });
-      const json = await res.json();
-      if (!res.ok || !json.success) throw new Error(json.error || "Unable to create menu item.");
+      if (!json.success) throw new Error(json.error || "Unable to create menu item.");
       setData((items) => [...items, json.item]);
       setExpandedId(json.item.id);
     } catch (err) {
@@ -231,9 +214,8 @@ export function AdminConsole() {
     setError("");
 
     try {
-      const res = await fetch(`/api/admin/menu/${id}`, { method: "DELETE" });
-      const json = await res.json();
-      if (!res.ok || !json.success) throw new Error(json.error || "Unable to delete menu item.");
+      const json = await ApiClient.deleteMenuItem(id);
+      if (!json.success) throw new Error(json.error || "Unable to delete menu item.");
       setData((items) => items.filter((item) => item.id !== id));
       if (expandedId === id) setExpandedId(null);
     } catch (err) {

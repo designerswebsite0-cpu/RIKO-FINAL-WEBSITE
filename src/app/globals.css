@@ -34,38 +34,44 @@
   --color-sand: var(--sand);
   --color-cocoa: var(--cocoa);
   --font-serif: "Cormorant Garamond", "DM Serif Display", serif;
-  --font-display: "DM Serif Display", "Cormorant Garamond", serif;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+  --font-calligraphy: "Pinyon Script", "Alex Brush", cursive;
 }
 
 :root {
-  --radius: 0.25rem;
-  /* RIKO earthy luxury palette */
-  --background: oklch(0.16 0.018 35); /* deep cocoa near-black */
-  --foreground: oklch(0.92 0.025 75); /* warm sand text */
-  --card: oklch(0.2 0.025 35);
-  --card-foreground: oklch(0.92 0.025 75);
-  --popover: oklch(0.18 0.02 35);
-  --popover-foreground: oklch(0.92 0.025 75);
-  --primary: oklch(0.62 0.16 45); /* burnt clay orange */
-  --primary-foreground: oklch(0.14 0.015 35);
-  --secondary: oklch(0.28 0.04 40);
-  --secondary-foreground: oklch(0.92 0.025 75);
-  --muted: oklch(0.24 0.03 38);
-  --muted-foreground: oklch(0.68 0.04 60);
-  --accent: oklch(0.7 0.18 50); /* ember orange */
-  --accent-foreground: oklch(0.14 0.015 35);
+  --radius: 0.5rem;
+  /* RIKO Palette — maroon-to-black gradient theme */
+  --background: oklch(0.08 0.02 22);          /* near-black base for gradient end (#0A0000) */
+  --foreground: oklch(0.96 0.025 75);          /* warm ivory text (#FAF4EA) */
+  --card: oklch(0.96 0.025 75);               /* warm editorial cream card background */
+  --card-foreground: oklch(0.22 0.14 22);      /* deep maroon text on cream cards */
+  --popover: oklch(0.96 0.025 75);
+  --popover-foreground: oklch(0.22 0.14 22);
+  --primary: oklch(0.30 0.18 22);             /* rich maroon (#6B0F1A) */
+  --primary-foreground: oklch(0.96 0.025 75);
+  --secondary: oklch(0.27 0.15 22);           /* wine burgundy (#4F111E) */
+  --secondary-foreground: oklch(0.96 0.025 75);
+  --muted: oklch(0.92 0.02 75);
+  --muted-foreground: oklch(0.40 0.08 22);
+  --accent: oklch(0.46 0.18 22);              /* crimson accent (#9E2336) */
+  --accent-foreground: oklch(0.96 0.025 75);
   --destructive: oklch(0.55 0.22 30);
   --destructive-foreground: oklch(0.96 0.02 75);
-  --border: oklch(0.32 0.04 40 / 60%);
-  --input: oklch(0.28 0.03 40);
-  --ring: oklch(0.62 0.16 45);
+  --border: oklch(0.35 0.12 22 / 40%);
+  --input: oklch(0.92 0.02 75);
+  --ring: oklch(0.46 0.18 22);
 
-  --ember: oklch(0.72 0.2 55);
-  --clay: oklch(0.55 0.14 40);
-  --terracotta: oklch(0.5 0.15 35);
-  --sand: oklch(0.85 0.04 75);
-  --cocoa: oklch(0.22 0.03 35);
+  --ember: oklch(0.70 0.11 40);               /* champagne copper (#DF9F7E) */
+  --clay: oklch(0.22 0.14 22);               /* deep maroon (#3E0E16) */
+  --terracotta: oklch(0.46 0.18 22);          /* crimson red (#9E2336) */
+  --sand: oklch(0.96 0.025 75);              /* cream ivory (#FAF4EA) */
+  --cocoa: oklch(0.08 0.02 22);              /* near-black (#0A0000) */
+
+  /* Gradient stops for maroon → black */
+  --grad-top: #6B0F1A;    /* rich maroon top */
+  --grad-mid: #2D050B;    /* deep maroon mid */
+  --grad-bot: #0A0000;    /* near-black bottom */
 }
 
 .dark {
@@ -80,7 +86,15 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: var(--color-background);
+    /* Maroon → Black gradient, fixed so it covers the full viewport always */
+    background: linear-gradient(
+      180deg,
+      var(--grad-top) 0%,
+      var(--grad-mid) 45%,
+      var(--grad-bot) 100%
+    );
+    background-attachment: fixed;
+    min-height: 100vh;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-weight: 300;
@@ -100,6 +114,10 @@
   }
   .font-display {
     font-family: var(--font-display);
+  }
+  .font-calligraphy {
+    font-family: var(--font-calligraphy);
+    font-weight: 400;
   }
   ::selection {
     background: var(--ember);
@@ -121,15 +139,71 @@
   }
 
   .ember-gradient {
-    background: radial-gradient(ellipse at 50% 100%, oklch(0.72 0.2 55 / 0.35), transparent 60%);
+    background: radial-gradient(ellipse at 50% 100%, oklch(0.48 0.20 22 / 0.55), transparent 70%);
   }
   .terracotta-gradient {
+    /* maroon → dark maroon → near-black */
     background: linear-gradient(
       180deg,
-      oklch(0.16 0.018 35) 0%,
-      oklch(0.22 0.04 38) 50%,
-      oklch(0.16 0.018 35) 100%
+      #6B0F1A 0%,
+      #2D050B 55%,
+      #0A0000 100%
     );
+  }
+  .maroon-gradient {
+    /* maroon → black diagonal */
+    background: linear-gradient(
+      160deg,
+      #6B0F1A 0%,
+      #3E0E16 40%,
+      #0A0000 100%
+    );
+  }
+  /* Global page-wide overlay gradient — used on page wrappers that need the full gradient */
+  .page-gradient {
+    background: linear-gradient(
+      180deg,
+      #6B0F1A 0%,
+      #2D050B 45%,
+      #0A0000 100%
+    );
+    background-attachment: fixed;
+  }
+  .cream-card {
+    background-color: oklch(0.96 0.025 75);
+    color: oklch(0.22 0.14 22);
+  }
+  .editorial-card {
+    background-color: #FAF4EA;
+    color: #3E0E16;
+    border: 1px solid #E8DCC9;
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.4);
+    border-radius: 1.5rem;
+  }
+  .editorial-card-dark {
+    background-color: #4F111E;
+    color: #FAF4EA;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
+    border-radius: 1.5rem;
+  }
+  .pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    font-weight: 500;
+  }
+  .maroon-pill {
+    border: 1px solid rgba(250, 244, 234, 0.4);
+    background-color: rgba(62, 14, 22, 0.85);
+    backdrop-filter: blur(8px);
+    color: #FAF4EA;
+    border-radius: 9999px;
   }
   .grain {
     position: relative;
@@ -158,13 +232,13 @@
 
   .ember-glow {
     box-shadow:
-      0 0 60px -10px oklch(0.72 0.2 55 / 0.45),
-      inset 0 0 40px oklch(0.3 0.08 40 / 0.4);
+      0 0 60px -10px oklch(0.74 0.10 76 / 0.45),
+      inset 0 0 40px oklch(0.18 0.055 18 / 0.4);
   }
 
   .hairline {
     height: 1px;
-    background: linear-gradient(90deg, transparent, oklch(0.62 0.16 45 / 0.5), transparent);
+    background: linear-gradient(90deg, transparent, oklch(0.74 0.10 76 / 0.5), transparent);
   }
 
   @keyframes emberFlicker {

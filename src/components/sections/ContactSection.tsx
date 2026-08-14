@@ -1,88 +1,125 @@
-import { MapPin, Phone, Clock, Instagram, Star } from "lucide-react";
+import { MapPin, Phone, Clock, Instagram, Star, Mail } from "lucide-react";
 
 export function ContactSection() {
   const cards = [
     {
       icon: MapPin,
       label: "Find Us",
-      lines: ["UB City, Vittal Mallya Road", "Bengaluru, Karnataka 560001"],
+      lines: [
+        { text: "UB City, Vittal Mallya Road", href: "https://maps.google.com/?q=UB+City+Bengaluru" },
+        { text: "Bengaluru, Karnataka 560001", href: "https://maps.google.com/?q=UB+City+Bengaluru" },
+      ],
     },
     {
       icon: Phone,
       label: "Reservations",
-      lines: ["+91 99725 40238", "concierge@riko.experience"],
+      lines: [
+        { text: "+91 99725 40238", href: "tel:+919972540238" },
+      ],
+    },
+    {
+      icon: Mail,
+      label: "Email",
+      lines: [
+        { text: "reservations@theriko.com", href: "mailto:reservations@theriko.com" },
+      ],
     },
     {
       icon: Clock,
       label: "Hours",
-      lines: ["Tue – Sun · 6:30 PM – Late", "Closed Mondays"],
+      lines: [
+        { text: "Tue – Sun · 6:30 PM – Late", href: null },
+        { text: "Closed Mondays", href: null },
+      ],
     },
     {
       icon: Instagram,
-      label: "Follow",
-      lines: ["@riko.experience"],
+      label: "Follow Us",
+      lines: [
+        { text: "@riko.experience", href: "https://www.instagram.com/riko.experience" },
+      ],
     },
   ];
 
   return (
-    <section id="contact" className="relative py-32 lg:py-48">
+    <section id="contact" className="relative py-16 lg:py-20 bg-transparent">
+      {/* Seamless flow divider */}
+      <div className="flex items-center justify-center gap-4 mb-12">
+        <div className="h-px w-24 bg-gradient-to-r from-transparent to-[#DF9F7E]/30" />
+        <span className="text-[#DF9F7E]/60 text-xs">✦</span>
+        <div className="h-px w-24 bg-gradient-to-l from-transparent to-[#DF9F7E]/30" />
+      </div>
+
       <div className="max-w-[1500px] mx-auto px-6 lg:px-12">
-        <div className="text-center mb-20">
-          <p className="reveal text-[11px] tracking-[0.5em] uppercase text-accent mb-6">
-            — Contact
-          </p>
-          <h2 className="reveal font-display text-5xl md:text-7xl text-sand leading-[1.02]">
-            Come <span className="italic font-serif text-accent">find us</span>.
+        <div className="text-center mb-12">
+          <span className="pill-badge border border-white/30 bg-black/40 backdrop-blur-md text-[#DF9F7E] mb-4 inline-block">
+            ★ Contact
+          </span>
+          <h2 className="reveal font-serif text-4xl md:text-6xl text-white leading-[1.02]">
+            Come <span className="font-calligraphy text-5xl md:text-7xl text-[#DF9F7E] font-normal align-middle px-2">find us</span>.
           </h2>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-5 space-y-4">
-            {cards.map((c) => (
-              <div
-                key={c.label}
-                className="reveal flex gap-6 p-6 border border-border bg-card/40 backdrop-blur-sm hover:border-accent/60 transition-colors duration-500 group"
-              >
-                <div className="w-12 h-12 flex-shrink-0 rounded-full border border-accent/40 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-primary-foreground transition-colors duration-500">
-                  <c.icon size={18} strokeWidth={1.2} />
-                </div>
-                <div>
-                  <div className="text-[10px] tracking-[0.4em] uppercase text-accent mb-2">
-                    {c.label}
+        <div className="grid lg:grid-cols-12 gap-8 items-stretch">
+          <div className="lg:col-span-5 space-y-4 flex flex-col justify-between">
+            <div className="space-y-3">
+              {cards.map((c) => (
+                <div
+                  key={c.label}
+                  className="reveal flex gap-5 p-5 border border-white/15 bg-white/5 backdrop-blur-sm rounded-xl hover:border-[#DF9F7E]/50 transition-colors duration-500 group"
+                >
+                  <div className="w-11 h-11 flex-shrink-0 rounded-full border border-[#DF9F7E]/40 flex items-center justify-center text-[#DF9F7E] group-hover:bg-[#DF9F7E] group-hover:text-black transition-all duration-500">
+                    <c.icon size={18} strokeWidth={1.5} />
                   </div>
-                  {c.lines.map((l) => (
-                    <div key={l} className="text-sand/85 font-light leading-relaxed">
-                      {l}
+                  <div>
+                    <div className="text-[10px] tracking-[0.4em] uppercase text-[#DF9F7E] mb-1 font-semibold">
+                      {c.label}
                     </div>
-                  ))}
+                    {c.lines.map((l) =>
+                      l.href ? (
+                        <a
+                          key={l.text}
+                          href={l.href}
+                          target={l.href.startsWith("http") ? "_blank" : undefined}
+                          rel={l.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                          className="block text-white font-normal text-sm leading-relaxed hover:text-[#DF9F7E] transition-colors duration-300"
+                        >
+                          {l.text}
+                        </a>
+                      ) : (
+                        <div key={l.text} className="text-white font-normal text-sm leading-relaxed">
+                          {l.text}
+                        </div>
+                      )
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
-            <div className="reveal flex items-center gap-5 p-6 border border-border bg-card/40 backdrop-blur-sm">
+            <div className="reveal flex items-center gap-4 p-5 border border-white/15 bg-white/5 rounded-xl backdrop-blur-sm mt-3">
               <div className="flex items-center gap-1.5">
-                <span className="font-display text-3xl text-accent">4.2</span>
-                <Star size={16} strokeWidth={1.2} className="text-accent fill-accent" />
+                <span className="font-serif text-2xl text-[#DF9F7E] font-bold">4.2</span>
+                <Star size={16} strokeWidth={1.5} className="text-[#DF9F7E] fill-[#DF9F7E]" />
               </div>
               <div>
-                <div className="text-sand text-sm">Peruvian Restaurant</div>
-                <div className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mt-1">
-                  Currently Open
+                <div className="text-white text-sm font-medium">Peruvian Fine Dining</div>
+                <div className="text-[10px] tracking-[0.3em] uppercase text-white/50 mt-0.5">
+                  UB City · Bengaluru
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-7 reveal">
-            <div className="relative w-full h-full min-h-[480px] overflow-hidden border border-border grain">
+          <div className="lg:col-span-7 reveal flex">
+            <div className="relative w-full min-h-[380px] rounded-xl overflow-hidden border border-white/15 shadow-2xl">
               <iframe
                 title="RIKO Location"
                 src="https://www.google.com/maps?q=UB+City+Bengaluru&output=embed"
-                className="absolute inset-0 w-full h-full grayscale-[0.4] contrast-[0.95] sepia-[0.25]"
+                className="absolute inset-0 w-full h-full grayscale-[0.3] contrast-[1.05]"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
-              <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-accent/10" />
             </div>
           </div>
         </div>
@@ -90,4 +127,3 @@ export function ContactSection() {
     </section>
   );
 }
-

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 export const metadata: Metadata = {
   title: {
@@ -25,10 +26,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Pinyon+Script&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=DM+Serif+Display:ital@0;1&display=swap"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <LoadingScreen />
+        {children}
+      </body>
     </html>
   );
 }
