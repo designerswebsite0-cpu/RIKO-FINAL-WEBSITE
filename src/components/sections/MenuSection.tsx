@@ -112,7 +112,7 @@ export function MenuSection() {
   return (
     <section
       id="menu"
-      className="relative min-h-screen lg:h-screen lg:max-h-screen bg-gradient-to-b from-[#160205] via-[#2A060C] to-[#120204] overflow-y-auto lg:overflow-hidden flex flex-col justify-between pt-24 lg:pt-32 pb-4 lg:pb-6"
+      className="relative min-h-screen bg-gradient-to-b from-[#160205] via-[#2A060C] to-[#120204] flex flex-col justify-between pt-24 lg:pt-32 pb-24 lg:pb-36"
     >
       {/* RIKO Maroon ambient glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#7A1523]/35 via-[#230408]/60 to-[#0A0002] pointer-events-none" />

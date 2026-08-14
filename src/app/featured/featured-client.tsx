@@ -107,9 +107,8 @@ export default function FeaturedClient() {
 
   return (
     <SiteShell>
-      {/* Absolute Full Screen Height Screen - strictly 100vh, locked height */}
       <section className="relative h-screen w-screen max-w-full overflow-hidden bg-black text-white flex flex-col justify-between pt-20 pb-6 px-6 sm:px-12 lg:px-16">
-        {/* Dynamic Background Image per slide */}
+        {/* Dynamic Background Image per slide (Grayscale & High Contrast for Newspaper style) */}
         {pressFeatures.map((feat, i) => (
           <div
             key={feat.publication}
@@ -121,17 +120,17 @@ export default function FeaturedClient() {
               alt={feat.publication}
               fill
               priority={i === 0}
-              className="object-cover brightness-[0.25]"
+              className="object-cover brightness-[0.2] grayscale contrast-[1.2]"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90" />
           </div>
         ))}
 
-        {/* Header / Nav Strip inside Viewport */}
+        {/* Header / Nav Strip inside Viewport (Monochrome styled) */}
         <div className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between border-b border-white/10 pb-3">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#DF9F7E] animate-pulse" />
-            <span className="text-[10px] uppercase tracking-[0.35em] text-[#DF9F7E] font-mono">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            <span className="text-[10px] uppercase tracking-[0.35em] text-white font-mono">
               In The Press
             </span>
           </div>
@@ -144,12 +143,12 @@ export default function FeaturedClient() {
                 onClick={() => goTo(i)}
                 className="text-[9px] font-mono uppercase tracking-wider transition-all duration-300 relative py-1"
                 style={{
-                  color: i === current ? "#DF9F7E" : "rgba(255,255,255,0.35)",
+                  color: i === current ? "#ffffff" : "rgba(255,255,255,0.35)",
                 }}
               >
                 {p.publication}
                 {i === current && (
-                  <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#DF9F7E]" />
+                  <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-white" />
                 )}
               </button>
             ))}
@@ -164,25 +163,25 @@ export default function FeaturedClient() {
               transform: visible ? "translateY(0)" : "translateY(8px)",
               transition: "opacity 0.3s ease, transform 0.3s ease",
             }}
-            className="border-4 border-double border-[#DF9F7E]/40 p-6 sm:p-8 bg-[#180306]/90 backdrop-blur-md rounded-lg shadow-2xl relative"
+            className="border-4 border-double border-neutral-900 p-6 sm:p-8 bg-[#f5f2eb] rounded-lg shadow-2xl relative text-neutral-900"
           >
             {/* Top Newspaper Banner */}
-            <div className="text-center border-b border-t border-dashed border-[#DF9F7E]/30 py-1.5 mb-5">
-              <p className="text-[9px] sm:text-[10px] tracking-[0.35em] font-mono text-white/40 uppercase">
+            <div className="text-center border-b border-t border-dashed border-neutral-400 py-1.5 mb-5">
+              <p className="text-[9px] sm:text-[10px] tracking-[0.35em] font-mono text-neutral-600 uppercase font-medium">
                 RIKO GAZETTE &bull; {item.date} &bull; UB CITY SPECIAL
               </p>
             </div>
 
             {/* Sub-header */}
             <div className="flex justify-between items-center mb-3">
-              <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-[#DF9F7E]">
+              <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-700 font-bold">
                 {item.tier}
               </span>
-              <span className="text-[9px] sm:text-[10px] text-white/40 font-mono">Vol. II No. VIII</span>
+              <span className="text-[9px] sm:text-[10px] text-neutral-500 font-mono">Vol. II No. VIII</span>
             </div>
 
             {/* Headline */}
-            <h2 className="font-serif font-medium text-xl sm:text-2xl lg:text-3xl text-white leading-tight mb-4 tracking-tight border-b border-white/10 pb-3">
+            <h2 className="font-serif font-bold text-xl sm:text-2xl lg:text-3xl text-neutral-950 leading-tight mb-4 tracking-tight border-b border-neutral-300 pb-3">
               {item.headline}
             </h2>
 
@@ -190,21 +189,21 @@ export default function FeaturedClient() {
             <div className="grid md:grid-cols-[1.5fr_1fr] gap-6 items-start">
               {/* Quote text Column */}
               <div className="space-y-4">
-                <p className="font-serif italic text-sm sm:text-base text-white/90 leading-relaxed text-justify first-letter:text-4xl first-letter:font-bold first-letter:float-left first-letter:mr-2 first-letter:text-[#DF9F7E] first-letter:font-serif">
+                <p className="font-serif italic text-sm sm:text-base text-neutral-800 leading-relaxed text-justify first-letter:text-4xl first-letter:font-bold first-letter:float-left first-letter:mr-2 first-letter:text-neutral-950 first-letter:font-serif">
                   {item.quote}
                 </p>
               </div>
 
               {/* Author Info / Link Column */}
-              <div className="border-t md:border-t-0 md:border-l border-[#DF9F7E]/20 pt-4 md:pt-0 md:pl-6 flex flex-col justify-between h-full space-y-4">
+              <div className="border-t md:border-t-0 md:border-l border-neutral-300 pt-4 md:pt-0 md:pl-6 flex flex-col justify-between h-full space-y-4">
                 <div>
-                  <span className="text-[9px] uppercase font-mono tracking-widest text-[#DF9F7E] block mb-1">
+                  <span className="text-[9px] uppercase font-mono tracking-widest text-neutral-500 block mb-1 font-bold">
                     WRITTEN BY
                   </span>
-                  <p className="text-xs sm:text-sm font-sans font-medium text-white/80">
+                  <p className="text-xs sm:text-sm font-sans font-semibold text-neutral-800">
                     {item.author}
                   </p>
-                  <span className="text-[9px] sm:text-[10px] font-mono text-white/40 block mt-0.5">
+                  <span className="text-[9px] sm:text-[10px] font-mono text-neutral-500 block mt-0.5">
                     {item.publication} Correspondent
                   </span>
                 </div>
@@ -213,7 +212,7 @@ export default function FeaturedClient() {
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-black bg-[#DF9F7E] px-4 py-2 rounded hover:bg-white hover:text-black transition-all duration-300 font-semibold font-mono"
+                  className="inline-flex items-center justify-center gap-2 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white bg-neutral-900 px-4 py-2 rounded hover:bg-neutral-800 hover:text-white transition-all duration-300 font-semibold font-mono shadow-sm"
                 >
                   Read Article <ExternalLink size={10} />
                 </a>
@@ -222,12 +221,12 @@ export default function FeaturedClient() {
           </div>
         </div>
 
-        {/* Bottom Bar & Timer Progress */}
+        {/* Bottom Bar & Timer Progress (Monochrome styled) */}
         <div className="relative z-10 w-full max-w-4xl mx-auto space-y-2">
           <div className="h-[2px] w-full bg-white/10 rounded-full overflow-hidden">
             <div
               key={`bar-${current}`}
-              className="h-full bg-[#DF9F7E] rounded-full"
+              className="h-full bg-white"
               style={{
                 animation: `grow-bar ${INTERVAL_MS}ms linear forwards`,
               }}
@@ -247,7 +246,7 @@ export default function FeaturedClient() {
                   className="h-1 rounded-full transition-all duration-500"
                   style={{
                     width: i === current ? "24px" : "6px",
-                    background: i === current ? "#DF9F7E" : "rgba(255,255,255,0.2)",
+                    background: i === current ? "#ffffff" : "rgba(255,255,255,0.2)",
                   }}
                 />
               ))}
