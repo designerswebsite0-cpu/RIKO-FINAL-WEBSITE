@@ -10,7 +10,10 @@ const sessionAgeSeconds = 60 * 60 * 8;
 const attempts = new Map<string, { count: number; lockoutUntil: number }>();
 
 function secret() {
-  const value = process.env.AUTH_SECRET || "default-development-auth-secret-key-32-chars-long";
+  let value = process.env.AUTH_SECRET?.trim() || "default-development-auth-secret-key-32-chars-long";
+  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+    value = value.slice(1, -1).trim();
+  }
   return new TextEncoder().encode(value);
 }
 
@@ -34,7 +37,10 @@ export function recordLogin(ip: string, successful: boolean) {
 }
 
 export function passwordIsCorrect(password: string) {
-  const configured = process.env.ADMIN_PASSWORD || "admin";
+  let configured = process.env.ADMIN_PASSWORD?.trim() || "admin";
+  if ((configured.startsWith('"') && configured.endsWith('"')) || (configured.startsWith("'") && configured.endsWith("'"))) {
+    configured = configured.slice(1, -1).trim();
+  }
   return safeEqual(password, configured);
 }
 
